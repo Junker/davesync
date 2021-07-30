@@ -4,6 +4,10 @@ Sync and encrypt your local directory to WebDav foldewr or your cloud with WebDa
 
 All files encrypted with GPG symmetric passphrase, you can download any file from your webdav or cloud and decrypt it with GPG app, which exists in any OS (Android, iOS, Linux, Windows etc).
 
+## Requirements
+- [webdav4](https://pypi.org/project/webdav4/)
+- [python-gnupg](https://pypi.org/project/python-gnupg/)
+
 ## Usage 
 ```
 davesync.py local_base remote_base [options]
