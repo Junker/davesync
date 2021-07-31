@@ -11,7 +11,7 @@ All files are encrypted with GPG symmetric passphrase, you can download any file
 ## Usage 
 ```
 davesync.py local_base remote_base [options]
-Process some integers.
+sync and encrypt your local directory to WebDav server
 
 positional arguments:
   local_base            Local directory to sync, e.g. /home/bob/myfolder
@@ -20,7 +20,7 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   --webdav-user WEBDAV_USER, -u WEBDAV_USER
-                        Username
+                        WebDav Username
   --webdav-password WEBDAV_PASSWORD, -p WEBDAV_PASSWORD
                         WebDav Password
   --webdav-password-file WEBDAV_PASSWORD_FILE
@@ -30,12 +30,19 @@ optional arguments:
   --gpg-passphrase-file GPG_PASSPHRASE_FILE
                         GPG Passphrase file
   --timeout TIMEOUT, -t TIMEOUT
-                        WebDav operation timeout
+                        WebDav operation timeout. Default: 10
   --save-metadata-step SAVE_METADATA_STEP
-                        save metadata every N files
+                        save metadata every N uploaded files. Default: 10
   --no-check-certificate [NO_CHECK_CERTIFICATE]
                         Do not verify SSL certificate
+  --cipher-algo CIPHER_ALGO
+                        Cipher algorithm. Default: AES. (IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH, CAMELLIA128, CAMELLIA192, CAMELLIA256 etc. Check your "gpg" command line help to see what symmetric cipher algorithms are supported)
+  --compress-algo COMPRESS_ALGO
+                        Compression algorithm. Default: none. (zip, zlib, bzip2, none etc. Check your "gpg" command line help to see what compression algorithms are supported)
+  --compress-level COMPRESS_LEVEL, -z COMPRESS_LEVEL
+                        Set compression level to N. Default: 0
   --verbose, -v         verbose (-v,-vv,-vvv)
+
 ```
 
 ## Caveats:
