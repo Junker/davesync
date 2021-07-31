@@ -169,16 +169,17 @@ files_uploaded = 0
 
 # traverse local base dir
 logger.info('Checking files...')
-for root, dirs, files in os.walk(local_base):
-	assert_on_bad_dir(root)
+for root_dir, dirs, files in os.walk(local_base):
+	assert_on_bad_dir(root_dir)
 
-	relpath = os.path.relpath(root, local_base)
+	relpath = os.path.relpath(root_dir, local_base)
 
-	logger.debug(f"Checking Dir: '{root}'...")
+	logger.debug(f"Checking Dir: '{relpath}'...")
 
 	if relpath in ['/', '.']:
 		relpath = ''
 
+	# create webdav dir
 	if relpath != '':
 		if webdav.exists(relpath):
 			if (not webdav.isdir(relpath)):
@@ -194,7 +195,7 @@ for root, dirs, files in os.walk(local_base):
 
 		dav_filename = filename + '.gpg'
 		dav_filepath = (relpath + '/' + dav_filename).strip("/")
-		full_filepath = os.path.join(root, filename)
+		full_filepath = os.path.join(root_dir, filename)
 		rel_filepath = os.path.join(relpath, filename)
 		modified_time = os.path.getmtime(full_filepath)
 		filesize = os.path.getsize(full_filepath)
