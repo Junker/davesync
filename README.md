@@ -30,6 +30,7 @@ optional arguments:
                         GPG Passphrase
   --gpg-passphrase-file GPG_PASSPHRASE_FILE
                         GPG Passphrase file
+  --delete [DELETE]     delete extraneous files/dirs from remote dirs.
   --timeout TIMEOUT, -t TIMEOUT
                         WebDav operation timeout. Default: 10
   --save-metadata-step SAVE_METADATA_STEP

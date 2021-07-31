@@ -97,6 +97,7 @@ def parse_args():
 	parser.add_argument('--webdav-password-file', type=str, help='WebDav Password file')
 	parser.add_argument('--gpg-passphrase', '-gp', type=str, help='GPG Passphrase')
 	parser.add_argument('--gpg-passphrase-file', type=str, help='GPG Passphrase file')
+	parser.add_argument('--delete', nargs='?', const=True, help='delete extraneous files/dirs from remote dirs.')
 	parser.add_argument('--timeout', '-t', type=int, help='WebDav operation timeout. Default: %(default)s', default=10)
 	parser.add_argument('--save-metadata-step', type=int, help='save metadata every N uploaded files. Default: %(default)s', default=10)
 	parser.add_argument('--no-check-certificate', nargs='?', const=True, help='Do not verify SSL certificate')
@@ -236,27 +237,28 @@ upload_metadata(new_metadata)
 
 
 # traverse remote base dir
-logger.info('Checking WebDav files...')
-def webdav_scan_recursively(root_dir):
+if args.delete:
+	logger.info('Checking WebDav files...')
+	def webdav_scan_recursively(root_dir_dir):
 
-	items = webdav.ls(root_dir)
+		items = webdav.ls(root_dir_dir)
 
-	for item in items:
-		if item['name'] == METADATA_FILENAME:
-			continue
+		for item in items:
+			if item['name'] == METADATA_FILENAME:
+				continue
 
-		logger.debug("Checking WebDav %s '%s'", item['type'], item['name'])
+			logger.debug("Checking WebDav %s '%s'", item['type'], item['name'])
 
-		local_path = os.path.join(local_base, item['name'])
+			local_path = os.path.join(local_base, item['name'])
 
-		if item['type'] == 'file':
-			local_path = remove_str_suffix(local_path, '.gpg')
+			if item['type'] == 'file':
+				local_path = remove_str_suffix(local_path, '.gpg')
 
-		if not os.path.exists(local_path):
-			logger.info("Remove %s '%s' from WebDav", item['type'], item['name'])
-			webdav.remove(item['name'])
-		else:
-			if item['type'] == 'directory':
-				webdav_scan_recursively(item['name'])
+			if not os.path.exists(local_path):
+				logger.info("Remove %s '%s' from WebDav", item['type'], item['name'])
+				webdav.remove(item['name'])
+			else:
+				if item['type'] == 'directory':
+					webdav_scan_recursively(item['name'])
 
-webdav_scan_recursively('')
+	webdav_scan_recursively('')
