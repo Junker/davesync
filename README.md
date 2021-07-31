@@ -13,7 +13,11 @@ All files are encrypted with GPG symmetric passphrase, you can download any file
 
 e.g.: 
 ```
-$ davesync.py /home/bob/mydata https://nextcloud.example.org/remote.php/dav/files/bob/mydata --webdav-user bob --webdav-password 123 --gpg-passphrase qwe -v
+$ davesync.py /home/bob/mydata https://nextcloud.example.org/remote.php/dav/files/bob/mydata \
+		--webdav-user=bob \
+		--webdav-password 123 \
+		--gpg-passphrase qwe \
+		--verbose
 ```
 
 ```
