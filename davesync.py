@@ -66,8 +66,7 @@ def read_gpg_passphrase():
 def create_logger():
 	logger = logging.getLogger(__file__) if args.verbose == 2 else logging.getLogger()
 	logger.setLevel(logging.INFO)
-	logger_handler = logging.StreamHandler()
-	logger.addHandler(logger_handler)
+	logger.addHandler(logging.StreamHandler())
 
 	if args.verbose > 1:
 		logger.setLevel(logging.DEBUG)
@@ -78,13 +77,13 @@ def parse_args():
 	parser = argparse.ArgumentParser(description='sync and encrypt your local directory to WebDav server')
 	parser.add_argument('local_base', type=str, help='Local directory to sync, e.g. /home/bob/myfolder')
 	parser.add_argument('remote_base', type=str, help='Base WebDav URL, e.g. https://example.org/dav/myfolder')
-	parser.add_argument('--webdav-user', '-u', type=str, help='Username')
+	parser.add_argument('--webdav-user', '-u', type=str, help='WebDav Username')
 	parser.add_argument('--webdav-password', '-p', type=str, help='WebDav Password')
 	parser.add_argument('--webdav-password-file', type=str, help='WebDav Password file')
 	parser.add_argument('--gpg-passphrase', '-gp', type=str, help='GPG Passphrase')
 	parser.add_argument('--gpg-passphrase-file', type=str, help='GPG Passphrase file')
-	parser.add_argument('--timeout', '-t', type=int, help='WebDav operation timeout', default=10)
-	parser.add_argument('--save-metadata-step', type=int, help='save metadata every N files', default=10)
+	parser.add_argument('--timeout', '-t', type=int, help='WebDav operation timeout. Default: %(default)s', default=10)
+	parser.add_argument('--save-metadata-step', type=int, help='save metadata every N uploaded files. Default: %(default)s', default=10)
 	parser.add_argument('--no-check-certificate', nargs='?', const=True, help='Do not verify SSL certificate')
 	parser.add_argument('--verbose', '-v', action='count', help='verbose (-v,-vv,-vvv)', default=0)
 
