@@ -7,6 +7,7 @@ import gnupg
 import tempfile
 import json
 import colorlog
+from getpass import getpass
 from pathlib import Path
 from webdav4.client import Client
 import webdav4
@@ -61,15 +62,19 @@ def read_webdav_password():
 	if args.webdav_password_file:
 		assert_on_bad_file(args.webdav_password_file)
 		return Path(args.webdav_password_file).read_text().strip()
-	else:
+	elif args.webdav_password:
 		return args.webdav_password
+	elif args.webdav_user:
+		return getpass('WebDav Password:')
 
 def read_gpg_passphrase():
 	if args.gpg_passphrase_file:
 		assert_on_bad_file(args.gpg_passphrase_file)
 		return Path(args.gpg_passphrase_file).read_text().strip()
-	else:
+	elif args.gpg_passphrase:
 		return args.gpg_passphrase
+	else:
+		return getpass('GPG Passphrase:')
 
 def create_logger():
 	logger = colorlog.getLogger(__file__) if args.verbose == 2 else colorlog.getLogger()
