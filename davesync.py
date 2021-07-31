@@ -151,7 +151,7 @@ logger = create_logger()
 
 local_base	= args.local_base.rstrip('/')
 remote_base = args.remote_base.rstrip('/')
-excluded_rgxs = list(map(lambda pattern: re.compile(fnmatch.translate(pattern)), args.exclude))
+excluded_rgxs = list(map(lambda pattern: re.compile(fnmatch.translate(pattern)), args.exclude)) if args.exclude else []
 
 assert_on_bad_dir(local_base)
 

@@ -17,6 +17,7 @@ $ davesync.py /home/bob/mydata https://nextcloud.example.org/remote.php/dav/file
 		--webdav-user=bob \
 		--webdav-password 123 \
 		--gpg-passphrase qwe \
+		--delete \
 		--verbose
 ```
 
