@@ -152,7 +152,13 @@ if (gpg_passphrase == None or not gpg_passphrase):
 
 
 gpg = gnupg.GPG()
-webdav = Client(remote_base, auth=(args.webdav_user, webdav_password) if args.webdav_user != None else None, verify=not args.no_check_certificate, timeout=args.timeout)
+
+try:
+	webdav = Client(remote_base, auth=(args.webdav_user, webdav_password) if args.webdav_user != None else None, verify=not args.no_check_certificate, timeout=args.timeout)
+	webdav.info('')
+except BaseException as err:
+	logger.critical(f'WebDav error: {err}')
+	sys.exit(1)
 
 assert_on_bad_webdav_dir('')
 
