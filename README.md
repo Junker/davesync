@@ -20,28 +20,27 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  --webdav-user WEBDAV_USER, -u WEBDAV_USER
+  --webdav-user USER, -u USER
                         WebDav Username
-  --webdav-password WEBDAV_PASSWORD, -p WEBDAV_PASSWORD
+  --webdav-password PASSWORD, -p PASSWORD
                         WebDav Password
-  --webdav-password-file WEBDAV_PASSWORD_FILE
+  --webdav-password-file PASSWORD_FILE
                         WebDav Password file
-  --gpg-passphrase GPG_PASSPHRASE, -gp GPG_PASSPHRASE
+  --gpg-passphrase PASSPHRASE, -gp PASSPHRASE
                         GPG Passphrase
-  --gpg-passphrase-file GPG_PASSPHRASE_FILE
+  --gpg-passphrase-file PASSPHRASE_FILE
                         GPG Passphrase file
-  --delete [DELETE]     delete extraneous files/dirs from remote dirs.
-  --timeout TIMEOUT, -t TIMEOUT
-                        WebDav operation timeout. Default: 10
-  --save-metadata-step SAVE_METADATA_STEP
+  --delete              delete extraneous files/dirs from remote dirs.
+  --force, -f           Force copying of files. Do not check files modifications
+  --timeout N, -t N     WebDav operation timeout N seconds. Default: 10
+  --exclude PATTERN     exclude files matching PATTERN
+  --save-metadata-step N
                         save metadata every N uploaded files. Default: 10
-  --no-check-certificate [NO_CHECK_CERTIFICATE]
+  --no-check-certificate
                         Do not verify SSL certificate
-  --cipher-algo CIPHER_ALGO
-                        Cipher algorithm. Default: AES. (IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH, CAMELLIA128, CAMELLIA192, CAMELLIA256 etc. Check your "gpg" command line help to see what symmetric cipher algorithms are supported)
-  --compress-algo COMPRESS_ALGO
-                        Compression algorithm. Default: none. (zip, zlib, bzip2, none etc. Check your "gpg" command line help to see what compression algorithms are supported)
-  --compress-level COMPRESS_LEVEL, -z COMPRESS_LEVEL
+  --cipher-algo CIPHER  Cipher algorithm. Default: AES. (IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH, CAMELLIA128, CAMELLIA192, CAMELLIA256 etc. Check your "gpg" command line help to see what symmetric cipher algorithms are supported)
+  --compress-algo ALGO  Compression algorithm. Default: none. (zip, zlib, bzip2, none etc. Check your "gpg" command line help to see what compression algorithms are supported)
+  --compress-level N, -z N
                         Set compression level to N. Default: 0
   --verbose, -v         verbose (-v,-vv,-vvv)
 
