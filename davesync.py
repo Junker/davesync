@@ -16,11 +16,11 @@ import webdav4
 
 def assert_on_bad_file(path):
 	assert os.path.isfile(path) and os.access(path, os.R_OK), \
-	   "File {} doesn't exist or isn't readable".format(path)
+		"File {} doesn't exist or isn't readable".format(path)
 
 def assert_on_bad_dir(path):
 	assert os.path.isdir(path) and os.access(path, os.R_OK), \
-	   "Directory {} doesn't exist or isn't readable".format(path)
+		"Directory {} doesn't exist or isn't readable".format(path)
 
 def assert_on_bad_webdav_dir(path):
 	error_msg = "WebDav directory '{}' doesn't exist".format(remote_base + '/' + path)
@@ -39,9 +39,9 @@ def encrypt_file(path):
 	fd, tempfilepath = tempfile.mkstemp()
 
 	res = gpg.encrypt_file(f, None, symmetric=args.cipher_algo, passphrase=gpg_passphrase, output=tempfilepath,
-					 extra_args=['--compress-algo', args.compress_algo,
-								 '-z', args.compress_level,
-								 '--set-filename', os.path.basename(path)])
+						   extra_args=['--compress-algo', args.compress_algo,
+									   '-z', args.compress_level,
+									   '--set-filename', os.path.basename(path)])
 
 
 	f.close()
@@ -198,7 +198,7 @@ for root, dirs, files in os.walk(local_base):
 			logger.info(f"Uploading file '{dav_filepath}'...")
 
 			try:
-			    tempfilepath = encrypt_file(full_filepath)
+				tempfilepath = encrypt_file(full_filepath)
 			except RuntimeError as err:
 				logger.critical(err)
 				sys.exit(1)
