@@ -98,6 +98,7 @@ def parse_args():
 	parser.add_argument('--gpg-passphrase', '-gp', type=str, help='GPG Passphrase')
 	parser.add_argument('--gpg-passphrase-file', type=str, help='GPG Passphrase file')
 	parser.add_argument('--delete', nargs='?', const=True, help='delete extraneous files/dirs from remote dirs.')
+	parser.add_argument('--force', '-f', nargs='?', const=True, help='Force copying of files. Do not check files modifications')
 	parser.add_argument('--timeout', '-t', type=int, help='WebDav operation timeout. Default: %(default)s', default=10)
 	parser.add_argument('--save-metadata-step', type=int, help='save metadata every N uploaded files. Default: %(default)s', default=10)
 	parser.add_argument('--no-check-certificate', nargs='?', const=True, help='Do not verify SSL certificate')
@@ -210,8 +211,9 @@ for root_dir, dirs, files in os.walk(local_base):
 			webdav.remove(dav_filepath)
 
 		# upload file if it doesn't exist or modified
-		if dav_filepath not in dav_files \
-		   or (dav_filepath not in metadata) \
+		if args.force \
+		   or dav_filepath not in dav_files \
+		   or dav_filepath not in metadata \
 		   or (dav_filepath in metadata and (metadata[dav_filepath]['modified'] != modified_time or metadata[dav_filepath]['size'] != filesize)):
 
 			logger.info(f"Uploading file '{dav_filepath}'...")
