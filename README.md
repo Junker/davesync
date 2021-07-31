@@ -9,7 +9,10 @@ All files are encrypted with GPG symmetric passphrase, you can download any file
 - [python-gnupg](https://pypi.org/project/python-gnupg/)
 - [colorlog](https://pypi.org/project/colorlog/)
 
-## Usage 
+## Usage
+
+e.g.: davesync.py /home/bob/mydata https://nextcloud.example.org/remote.php/dav/files/bob/mydata --webdav-user bob --webdav-password 123 --gpg-passphrase qwe -v
+
 ```
 davesync.py local_base remote_base [options]
 sync and encrypt your local directory to WebDav server
