@@ -107,6 +107,7 @@ def parse_args():
 	parser.add_argument('--gpg-passphrase', '-gp', metavar='PASSPHRASE', type=str, help='GPG Passphrase')
 	parser.add_argument('--gpg-passphrase-file', metavar='PASSPHRASE_FILE', type=str, help='GPG Passphrase file')
 	parser.add_argument('--delete', action='store_true', help='delete extraneous files/dirs from remote dirs.')
+	parser.add_argument('--delete-excluded', action='store_true', help='Delete excluded files from dest dirs')
 	parser.add_argument('--force', '-f', action='store_true', help='Force copying of files. Do not check files modifications')
 	parser.add_argument('--timeout', '-t', metavar='N', type=int, help='WebDav operation timeout N seconds. Default: %(default)s', default=10)
 	parser.add_argument('--exclude', metavar='PATTERN', type=str, action='append', help='exclude files matching PATTERN')
@@ -274,7 +275,7 @@ if args.delete:
 			if item['type'] == 'file':
 				local_path = remove_str_suffix(local_path, '.gpg')
 
-			if not os.path.exists(local_path):
+			if not os.path.exists(local_path) or excluded_path(item['name']):
 				logger.info("Remove %s '%s' from WebDav", item['type'], item['name'])
 				webdav.remove(item['name'])
 			else:
