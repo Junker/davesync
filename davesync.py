@@ -38,7 +38,10 @@ def encrypt_file(path):
 
 	fd, tempfilepath = tempfile.mkstemp()
 
-	gpg.encrypt_file(f, None, symmetric='AES256', passphrase=gpg_passphrase, output=tempfilepath)
+	gpg.encrypt_file(f, None, symmetric=args.cipher_algo, passphrase=gpg_passphrase, output=tempfilepath,
+					 extra_args=['--compress-algo', args.compress_algo,
+								 '-z', args.compress_level,
+								 '--set-filename', os.path.basename(path)])
 	f.close()
 
 	return tempfilepath
@@ -85,6 +88,9 @@ def parse_args():
 	parser.add_argument('--timeout', '-t', type=int, help='WebDav operation timeout. Default: %(default)s', default=10)
 	parser.add_argument('--save-metadata-step', type=int, help='save metadata every N uploaded files. Default: %(default)s', default=10)
 	parser.add_argument('--no-check-certificate', nargs='?', const=True, help='Do not verify SSL certificate')
+	parser.add_argument('--cipher-algo', type=str, default='AES', help='Cipher algorithm. Default: %(default)s. (IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH, CAMELLIA128, CAMELLIA192, CAMELLIA256 etc. Check your "gpg" command line help to see what symmetric cipher algorithms are supported)')
+	parser.add_argument('--compress-algo', type=str, default='none', help='Compression algorithm. Default: %(default)s. (zip, zlib, bzip2, none etc. Check your "gpg" command line help to see what compression algorithms are supported)')
+	parser.add_argument('--compress-level', '-z', type=str, default='0', help='Set compression level to N. Default: %(default)s')
 	parser.add_argument('--verbose', '-v', action='count', help='verbose (-v,-vv,-vvv)', default=0)
 
 
