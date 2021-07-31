@@ -42,6 +42,7 @@ optional arguments:
   --gpg-passphrase-file PASSPHRASE_FILE
                         GPG Passphrase file
   --delete              delete extraneous files/dirs from remote dirs.
+  --delete-excluded     Delete excluded files from dest dirs
   --force, -f           Force copying of files. Do not check files modifications
   --timeout N, -t N     WebDav operation timeout N seconds. Default: 10
   --exclude PATTERN     exclude files matching PATTERN
