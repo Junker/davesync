@@ -38,11 +38,16 @@ def encrypt_file(path):
 
 	fd, tempfilepath = tempfile.mkstemp()
 
-	gpg.encrypt_file(f, None, symmetric=args.cipher_algo, passphrase=gpg_passphrase, output=tempfilepath,
+	res = gpg.encrypt_file(f, None, symmetric=args.cipher_algo, passphrase=gpg_passphrase, output=tempfilepath,
 					 extra_args=['--compress-algo', args.compress_algo,
 								 '-z', args.compress_level,
 								 '--set-filename', os.path.basename(path)])
+
+
 	f.close()
+
+	if not res:
+		raise RuntimeError(f'GPG Error: {res.status}')
 
 	return tempfilepath
 
@@ -192,7 +197,13 @@ for root, dirs, files in os.walk(local_base):
 		if dav_filepath not in dav_files or (dav_filepath not in metadata) or (dav_filepath in metadata and metadata[dav_filepath]['modified'] != modified_time):
 			logger.info(f"Uploading file '{dav_filepath}'...")
 
-			tempfilepath = encrypt_file(full_filepath)
+			try:
+			    tempfilepath = encrypt_file(full_filepath)
+			except RuntimeError as err:
+				logger.critical(err)
+				sys.exit(1)
+
+
 			webdav.upload_file(tempfilepath, dav_filepath, overwrite=True)
 			os.unlink(tempfilepath)
 
