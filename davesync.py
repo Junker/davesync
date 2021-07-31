@@ -7,6 +7,8 @@ import gnupg
 import tempfile
 import json
 import colorlog
+import fnmatch
+import re
 from getpass import getpass
 from pathlib import Path
 from webdav4.client import Client
@@ -88,6 +90,13 @@ def create_logger():
 
 	return logger
 
+def excluded_path(path):
+	for rgx in excluded_rgxs:
+		if rgx.search(path):
+			return True
+	return False
+
+
 def parse_args():
 	parser = argparse.ArgumentParser(description='sync and encrypt your local directory to WebDav server')
 	parser.add_argument('local_base', type=str, help='Local directory to sync, e.g. /home/bob/myfolder')
@@ -100,13 +109,13 @@ def parse_args():
 	parser.add_argument('--delete', nargs='?', const=True, help='delete extraneous files/dirs from remote dirs.')
 	parser.add_argument('--force', '-f', nargs='?', const=True, help='Force copying of files. Do not check files modifications')
 	parser.add_argument('--timeout', '-t', type=int, help='WebDav operation timeout. Default: %(default)s', default=10)
+	parser.add_argument('--exclude', metavar='PATTERN', type=str, action='append', help='exclude files matching PATTERN')
 	parser.add_argument('--save-metadata-step', type=int, help='save metadata every N uploaded files. Default: %(default)s', default=10)
 	parser.add_argument('--no-check-certificate', nargs='?', const=True, help='Do not verify SSL certificate')
 	parser.add_argument('--cipher-algo', type=str, default='AES', help='Cipher algorithm. Default: %(default)s. (IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH, CAMELLIA128, CAMELLIA192, CAMELLIA256 etc. Check your "gpg" command line help to see what symmetric cipher algorithms are supported)')
 	parser.add_argument('--compress-algo', type=str, default='none', help='Compression algorithm. Default: %(default)s. (zip, zlib, bzip2, none etc. Check your "gpg" command line help to see what compression algorithms are supported)')
 	parser.add_argument('--compress-level', '-z', type=str, default='0', help='Set compression level to N. Default: %(default)s')
 	parser.add_argument('--verbose', '-v', action='count', help='verbose (-v,-vv,-vvv)', default=0)
-
 
 	return parser.parse_args()
 
@@ -142,6 +151,7 @@ logger = create_logger()
 
 local_base	= args.local_base.rstrip('/')
 remote_base = args.remote_base.rstrip('/')
+excluded_rgxs = list(map(lambda pattern: re.compile(fnmatch.translate(pattern)), args.exclude))
 
 assert_on_bad_dir(local_base)
 
@@ -176,6 +186,10 @@ for root_dir, dirs, files in os.walk(local_base):
 
 	relpath = os.path.relpath(root_dir, local_base)
 
+	# skip excluded dir
+	if excluded_path(relpath):
+		continue
+
 	logger.debug(f"Checking Dir: '{relpath}'...")
 
 	if relpath in ['/', '.']:
@@ -201,6 +215,10 @@ for root_dir, dirs, files in os.walk(local_base):
 		rel_filepath = os.path.join(relpath, filename)
 		modified_time = os.path.getmtime(full_filepath)
 		filesize = os.path.getsize(full_filepath)
+
+		# skip excluded file
+		if excluded_path(rel_filepath):
+			continue
 
 		logger.debug(f"Checking file: '{rel_filepath}'...")
 
