@@ -197,17 +197,21 @@ for root, dirs, files in os.walk(local_base):
 		full_filepath = os.path.join(root, filename)
 		rel_filepath = os.path.join(relpath, filename)
 		modified_time = os.path.getmtime(full_filepath)
+		filesize = os.path.getsize(full_filepath)
 
 		logger.debug(f"Checking file: '{rel_filepath}'...")
 
-		new_metadata[dav_filepath] = {'modified': modified_time}
+		new_metadata[dav_filepath] = {'modified': modified_time, 'size': filesize}
 
 		# remove directory from webdav if it has same name as local file
 		if dav_filepath in dav_files and dav_items[dav_filepath]['type'] != 'file':
 			webdav.remove(dav_filepath)
 
 		# upload file if it doesn't exist or modified
-		if dav_filepath not in dav_files or (dav_filepath not in metadata) or (dav_filepath in metadata and metadata[dav_filepath]['modified'] != modified_time):
+		if dav_filepath not in dav_files \
+		   or (dav_filepath not in metadata) \
+		   or (dav_filepath in metadata and (metadata[dav_filepath]['modified'] != modified_time or metadata[dav_filepath]['size'] != filesize)):
+
 			logger.info(f"Uploading file '{dav_filepath}'...")
 
 			try:
