@@ -6,7 +6,7 @@ import argparse
 import gnupg
 import tempfile
 import json
-import logging
+import colorlog
 from pathlib import Path
 from webdav4.client import Client
 import webdav4
@@ -72,12 +72,14 @@ def read_gpg_passphrase():
 		return args.gpg_passphrase
 
 def create_logger():
-	logger = logging.getLogger(__file__) if args.verbose == 2 else logging.getLogger()
-	logger.setLevel(logging.INFO)
-	logger.addHandler(logging.StreamHandler())
+	logger = colorlog.getLogger(__file__) if args.verbose == 2 else colorlog.getLogger()
+	logger.setLevel(colorlog.colorlog.logging.INFO)
+	handler = colorlog.StreamHandler()
+	handler.setFormatter(colorlog.ColoredFormatter("%(log_color)s %(message)s"))
+	logger.addHandler(handler)
 
 	if args.verbose > 1:
-		logger.setLevel(logging.DEBUG)
+		logger.setLevel(colorlog.colorlog.logging.DEBUG)
 
 	return logger
 

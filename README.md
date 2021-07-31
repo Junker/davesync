@@ -7,6 +7,7 @@ All files are encrypted with GPG symmetric passphrase, you can download any file
 ## Requirements
 - [webdav4](https://pypi.org/project/webdav4/)
 - [python-gnupg](https://pypi.org/project/python-gnupg/)
+- [colorlog](https://pypi.org/project/colorlog/)
 
 ## Usage 
 ```
