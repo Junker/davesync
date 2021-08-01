@@ -41,7 +41,7 @@ def encrypt_file(path):
 
 	fd, tempfilepath = tempfile.mkstemp()
 
-	res = gpg.encrypt_file(f, None, symmetric=args.cipher_algo, passphrase=gpg_passphrase, output=tempfilepath,
+	res = gpg.encrypt_file(f, None, symmetric=args.cipher_algo, passphrase=gpg_passphrase, output=tempfilepath, armor=False,
 						   extra_args=['--compress-algo', args.compress_algo,
 									   '-z', args.compress_level,
 									   '--set-filename', os.path.basename(path)])
@@ -168,12 +168,11 @@ try:
 	webdav = Client(remote_base, auth=(args.webdav_user, webdav_password) if args.webdav_user != None else None,
 					verify=not args.no_check_certificate,
 					timeout=args.timeout)
-	webdav.info('')
+	assert_on_bad_webdav_dir('')
 except BaseException as err:
 	logger.critical(f'WebDav error: {err}')
 	sys.exit(1)
 
-assert_on_bad_webdav_dir('')
 
 metadata = load_metadata()
 new_metadata = {}
