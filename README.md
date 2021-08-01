@@ -12,6 +12,29 @@ All files are encrypted with GPG symmetric passphrase, you can download any file
 ```
 pip install -r requirements.txt
 ```
+
+## Result example
+
+Local folder:
+```
+/home/bob/mydata
+│
+├─bank_records.xlsx
+├─my_nude_photo.jpg
+├─very_secret_document.docx
+└─passport.pdf
+```
+WebDav folder:
+```
+https://nextcloud.example.org/remote.php/dav/files/bob/mydata
+│
+├─bank_records.xlsx.gpg
+├─my_nude_photo.jpg.gpg
+├─very_secret_document.docx.gpg
+├─passport.pdf.gpg
+└─davesync-metadata.json
+```
+
 ## Usage
 
 e.g.: 
