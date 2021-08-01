@@ -4,11 +4,14 @@ Sync and encrypt your local directory to WebDav folder or your cloud with WebDav
 
 All files are encrypted with GPG symmetric passphrase, you can download any file from your webdav or cloud and decrypt it with GPG app, which exists in any OS (Android, iOS, Linux, Windows etc).
 
-## Requirements
+## Dependencies
 - [webdav4](https://pypi.org/project/webdav4/)
 - [python-gnupg](https://pypi.org/project/python-gnupg/)
 - [colorlog](https://pypi.org/project/colorlog/)
 
+```
+pip install -r requirements.txt
+```
 ## Usage
 
 e.g.: 

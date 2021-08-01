@@ -1,0 +1,3 @@
+python-gnupg
+webdav4
+colorlog
