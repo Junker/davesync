@@ -84,5 +84,24 @@ optional arguments:
 
 ```
 
+## Decrypt
+
+#### CLI:
+```
+gpg example.docx.gpg
+```
+
+#### GUI:
+Windows:
+- [WinGPG](https://scand.com/products/wingpg/)
+
+OSX:
+- [GPGTools](https://gpgtools.org/)
+
+Android:
+- [OpenKeychain: Easy PGP](https://play.google.com/store/apps/details?id=org.sufficientlysecure.keychain)
+
+
+
 ## Caveats:
 - filenames not encrypted
