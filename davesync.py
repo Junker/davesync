@@ -7,6 +7,7 @@ import gnupg
 import tempfile
 import json
 import colorlog
+import logging
 import fnmatch
 import re
 from getpass import getpass
@@ -78,13 +79,13 @@ def read_gpg_passphrase():
 
 def create_logger():
 	logger = colorlog.getLogger(__file__) if args.verbose < 2 else colorlog.getLogger()
-	logger.setLevel(colorlog.colorlog.logging.INFO)
+	logger.setLevel(logging.INFO)
 	handler = colorlog.StreamHandler()
 	handler.setFormatter(colorlog.ColoredFormatter("%(log_color)s %(message)s"))
 	logger.addHandler(handler)
 
 	if args.verbose >= 1:
-		logger.setLevel(colorlog.colorlog.logging.DEBUG)
+		logger.setLevel(logging.DEBUG)
 
 	return logger
 
