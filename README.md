@@ -104,4 +104,4 @@ Android:
 
 
 ## Caveats:
-- filenames not encrypted
+- filenames are not encrypted
