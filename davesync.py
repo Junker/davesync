@@ -9,6 +9,7 @@ import json
 import colorlog
 import logging
 import fnmatch
+import subprocess
 import re
 from getpass import getpass
 from pathlib import Path
@@ -36,6 +37,12 @@ def assert_on_bad_webdav_dir(path):
 		logger.critical(error_msg)
 		sys.exit(1)
 
+def run_command(command):
+	try:
+		return subprocess.run(command, shell=True, check=True, capture_output=True, text=True).stdout.strip()
+	except subprocess.CalledProcessError as e:
+		logger.critical(f"Error executing command: {e}")
+		sys.exit(1)
 
 def encrypt_file(path):
 	f = open(path, 'rb')
@@ -43,9 +50,10 @@ def encrypt_file(path):
 	fd, tempfilepath = tempfile.mkstemp()
 
 	res = gpg.encrypt_file(f, None, symmetric=args.cipher_algo, passphrase=gpg_passphrase, output=tempfilepath, armor=False,
-						   extra_args=['--compress-algo', args.compress_algo,
-									   '-z', args.compress_level,
-									   '--set-filename', os.path.basename(path)])
+			       extra_args=['--s2k-digest-algo', args.digest_algo,
+					   '--compress-algo', args.compress_algo,
+					   '-z', args.compress_level,
+					   '--set-filename', os.path.basename(path)])
 	f.close()
 
 	if not res:
@@ -60,6 +68,8 @@ def remove_str_suffix(text, suffix):
 		return text
 
 def read_webdav_password():
+	if args.webdav_password_command:
+		return run_command(args.webdav_password_command)
 	if args.webdav_password_file:
 		assert_on_bad_file(args.webdav_password_file)
 		return Path(args.webdav_password_file).read_text().strip()
@@ -69,6 +79,8 @@ def read_webdav_password():
 		return getpass('WebDav Password:')
 
 def read_gpg_passphrase():
+	if args.gpg_passphrase_command:
+		return run_command(args.gpg_passphrase_command)
 	if args.gpg_passphrase_file:
 		assert_on_bad_file(args.gpg_passphrase_file)
 		return Path(args.gpg_passphrase_file).read_text().strip()
@@ -76,6 +88,7 @@ def read_gpg_passphrase():
 		return args.gpg_passphrase
 	else:
 		return getpass('GPG Passphrase:')
+
 
 def create_logger():
 	logger = colorlog.getLogger(__file__) if args.verbose < 2 else colorlog.getLogger()
@@ -103,8 +116,10 @@ def parse_args():
 	parser.add_argument('--webdav-user', '-u', metavar='USER', type=str, help='WebDav Username')
 	parser.add_argument('--webdav-password', '-p', metavar='PASSWORD', type=str, help='WebDav Password')
 	parser.add_argument('--webdav-password-file', metavar='PASSWORD_FILE', type=str, help='WebDav Password file')
+	parser.add_argument('--webdav-password-command', metavar='PASSWORD_COMMAND', type=str, help='WebDav Password command')
 	parser.add_argument('--gpg-passphrase', '-gp', metavar='PASSPHRASE', type=str, help='GPG Passphrase')
 	parser.add_argument('--gpg-passphrase-file', metavar='PASSPHRASE_FILE', type=str, help='GPG Passphrase file')
+	parser.add_argument('--gpg-passphrase-command', metavar='PASSPHRASE_COMMAND', type=str, help='GPG Passphrase command')
 	parser.add_argument('--delete', action='store_true', help='delete extraneous files/dirs from remote dirs.')
 	parser.add_argument('--delete-excluded', action='store_true', help='Delete excluded files from dest dirs')
 	parser.add_argument('--force', '-f', action='store_true', help='Force copying of files. Do not check files modifications')
@@ -112,7 +127,8 @@ def parse_args():
 	parser.add_argument('--exclude', metavar='PATTERN', type=str, action='append', help='exclude files matching PATTERN')
 	parser.add_argument('--save-metadata-step', metavar='N', type=int, help='save metadata every N uploaded files. Default: %(default)s', default=10)
 	parser.add_argument('--no-check-certificate', action='store_true', help='Do not verify SSL certificate')
-	parser.add_argument('--cipher-algo', metavar='CIPHER', type=str, default='AES', help='Cipher algorithm. Default: %(default)s. (IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH, CAMELLIA128, CAMELLIA192, CAMELLIA256 etc. Check your "gpg" command line help to see what symmetric cipher algorithms are supported)')
+	parser.add_argument('--cipher-algo', metavar='CIPHER', type=str, default='AES256', help='Cipher algorithm. Default: %(default)s. (IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH, CAMELLIA128, CAMELLIA192, CAMELLIA256 etc. Check your "gpg" command line help to see what symmetric cipher algorithms are supported)')
+	parser.add_argument('--digest-algo', metavar='DIGEST', type=str, default='SHA256', help='Digest algorithm. Default: %(default)s. (SHA1, RIPEMD160, SHA256, SHA384, SHA512, SHA224 etc. Check your "gpg" command line help to see what Hash algorithms are supported)')
 	parser.add_argument('--compress-algo', metavar='ALGO', type=str, default='none', help='Compression algorithm. Default: %(default)s. (zip, zlib, bzip2, none etc. Check your "gpg" command line help to see what compression algorithms are supported)')
 	parser.add_argument('--compress-level', '-z', metavar='N', type=str, default='0', help='Set compression level to N. Default: %(default)s')
 	parser.add_argument('--verbose', '-v', action='count', help='verbose (-v,-vv,-vvv)', default=0)
@@ -167,8 +183,8 @@ gpg = gnupg.GPG()
 
 try:
 	webdav = Client(remote_base, auth=(args.webdav_user, webdav_password) if args.webdav_user != None else None,
-					verify=not args.no_check_certificate,
-					timeout=args.timeout)
+			verify=not args.no_check_certificate,
+			timeout=args.timeout)
 	assert_on_bad_webdav_dir('')
 except BaseException as err:
 	logger.critical(f'WebDav error: {err}')
